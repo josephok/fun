@@ -1,0 +1,12 @@
+<h3>你好，世界！</h3>
+<div class="page-header" ng-repeat="post in index.posts">
+<h4><a href="#/post/{{post.id}}">{{post.title}}</a></h4>
+</div>
+<nav>
+  <ul class="pagination">
+    <li><a href="?p=1#/">&laquo;第一页</a></li>
+    <li ng-repeat="page in index.pages" ng-class="{'active': page == index.currentPage}">
+        <a href="?p={{page}}#/">{{page}}</a></li>
+    <li><a href="?p={{index.lastPage}}#/">最后一页&raquo;</a></li>
+  </ul>
+</nav>

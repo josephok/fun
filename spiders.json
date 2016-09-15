@@ -1,0 +1,8 @@
+{
+    "犯贱志": {
+        "url": "http://www.fanjian.net/",
+        "proxies": {
+            "http": "http://127.0.0.1:8087"
+        }
+    }
+}
