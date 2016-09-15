@@ -52,13 +52,21 @@
                 const currentPage = parseInt(pageId, 10);
                 ctrl.currentPage = currentPage;
                 let totalPrev = 0;
-                for (let i = currentPage; i >= currentPage - Math.floor(ctrl.totalPageInView / 2) && i >= 1; i--) {
+
+                if (currentPage === ctrl.lastPage) {
+                    for (let i = ctrl.lastPage; i > ctrl.lastPage - ctrl.totalPageInView; i--)
                     ctrl.pages.push(i);
                     totalPrev++;
                 }
+                else {
+                    for (let i = currentPage; i >= currentPage - Math.floor(ctrl.totalPageInView / 2) && i >= 1; i--) {
+                        ctrl.pages.push(i);
+                        totalPrev++;
+                    }
+                }
                 ctrl.pages.reverse();
 
-                for (let i = currentPage + 1; i <= currentPage + ctrl.totalPageInView - totalPrev; i++) {
+                for (let i = currentPage + 1; i <= currentPage + ctrl.totalPageInView - totalPrev && i <= ctrl.lastPage; i++) {
                     ctrl.pages.push(i);
                 }
             });

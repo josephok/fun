@@ -7,7 +7,7 @@ class FanjianSpider(Spider):
     def _get_index_urls(self):
         urls = [self.url]
         next_urls = ['{}latest-{}'.format(self.url, i)
-            for i in range(2, SCRAPY_PAGES)]
+            for i in range(2, SCRAPY_PAGES + 1)]
         urls.extend(next_urls)
         return urls
 
