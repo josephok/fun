@@ -7,7 +7,7 @@ from spider import Post
 from datetime import datetime
 
 ITEMS_PER_PAGE = 10
-TOTAL_PAGES_IN_VIEW = 5
+TOTAL_PAGES_IN_VIEW = 10
 
 define("port", default=8080, help="run on the given port", type=int)
 
@@ -20,9 +20,17 @@ class IndexHandler(tornado.web.RequestHandler):
 class PostHandler(tornado.web.RequestHandler):
     def get(self):
         page = self.get_query_argument("p")
+        try:
+            query = self.get_query_argument("q")
+        except tornado.web.MissingArgumentError:
+            query = None
         offset = (int(page) - 1) * ITEMS_PER_PAGE
-        posts = Post.objects.skip(offset).limit(ITEMS_PER_PAGE)
-        total_pages_in_db = len(Post.objects) // ITEMS_PER_PAGE
+        if query:
+            q_posts = Post.objects(title__icontains=query)
+        else:
+            q_posts = Post.objects
+        posts = q_posts.skip(offset).limit(ITEMS_PER_PAGE)
+        total_pages_in_db = len(q_posts) // ITEMS_PER_PAGE
         if total_pages_in_db < TOTAL_PAGES_IN_VIEW:
             total_pages = total_pages_in_db
         else:

@@ -2,12 +2,14 @@ import requests
 import json
 import os
 import gevent
-import logging
+
 from functools import partial
 from lxml import html as xhtml
-from pyquery import PyQuery as pq
+from pyquery import PyQuery
 from mongoengine import *  # noqa
 import time
+
+import logging
 
 logger = logging.getLogger(__file__)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')  # noqa
@@ -16,14 +18,17 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 logger.setLevel(logging.DEBUG)
 
+
 SETTINGS = os.path.join(os.path.dirname(__file__), "spiders.json")
 
-SCRAPY_PAGES = 50
+SCRAPY_PAGES = 20
 
 connect('fun')  # noqa
 
 
 class Post(Document):  # noqa
+    # 来源
+    source = StringField(required=True, index=True)  # noqa
     # 标题
     title = StringField(required=True, unique=True)  # noqa
     # 发表日期
@@ -33,6 +38,8 @@ class Post(Document):  # noqa
 
 
 class Spider:
+    need_decode = False
+
     def __init__(self, *args, **kwargs):
         with open(SETTINGS, "r") as f:
             settings = json.load(f)[self.name]
@@ -60,6 +67,7 @@ class Spider:
         """
         logger.info("开始爬取{}的首页".format(self.name))
         index_urls = self._get_index_urls()
+        logger.info("爬取到网址为: {}".format(index_urls))
 
         ret_urls = []
 
@@ -76,11 +84,17 @@ class Spider:
     def parse_content(self, url):
         """解析内容页，将其存放到mongodb中"""
         logger.info("解析文章内容，地址为：{}".format(url))
-        html = self.req(url).text
+        if self.need_decode:
+            html = self.req(url).content.decode('utf-8')
+        else:
+            html = self.req(url).text
         page = xhtml.fromstring(html)
-        document = pq(page)
+        document = PyQuery(page)
         title, post_time, content = self._parse_content(page, document)
-        post = Post(title=title, post_time=post_time, content=content)
+        if title.find("大杂烩") != -1:
+            return
+        post = Post(title=title, post_time=post_time, content=content,
+                    source=self.name)
         try:
             post.save()
         except Exception as e:
@@ -94,7 +108,5 @@ class Spider:
         threads = [gevent.spawn(self.parse_content, url) for url in page_urls]
         gevent.joinall(threads)
 
-        # for url in page_urls:
-        #     self.parse_content(url)
         end = time.time()
         logger.info("爬取{}共花费时间为: {:.2f} s".format(self.name, end - start))

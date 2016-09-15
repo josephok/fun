@@ -29,7 +29,16 @@
   </head>
   <body ng-app="web">
       <div class="container">
-      <div class="col-xs-6 col-center-block">
+      <div class="col-xs-8 col-center-block">
+          <h3><a href="/#/">你好，世界！</a>
+              <form class="form-inline" style="display: inline-block; float: right;" action="/" method="GET">
+               <div class="form-group">
+               <input type="text" class="form-control" placeholder="搜索" name="q">
+             </div>
+             <button type="submit" class="btn btn-primary btn-sm">提交</button>
+             </form>
+          </h3>
+          <hr>
           <ng-view></ng-view>
       </div>
       </div>

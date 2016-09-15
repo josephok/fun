@@ -1,0 +1,8 @@
+<nav>
+  <ul class="pagination">
+    <li><a href="?p=1&q={{index.query}}#/">&laquo;第一页</a></li>
+    <li ng-repeat="page in index.pages" ng-class="{'active': page == index.currentPage}">
+        <a href="?p={{page}}&q={{index.query}}#/">{{page}}</a></li>
+    <li><a href="?p={{index.lastPage}}&q={{index.query}}#/">最后一页&raquo;</a></li>
+  </ul>
+</nav>

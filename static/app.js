@@ -18,6 +18,16 @@
             $sceProvider.enabled(false);
         });
 
+    app.directive('pagination', page);
+    function page() {
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/static/views/page.html',
+            replace: true,
+        };
+        return directive;
+    }
+
     app.factory('web.api.service', apiService);
     apiService.$inject = ['$http'];
     function apiService($http) {
@@ -36,14 +46,34 @@
         }
     }
 
+    app.factory('query.arguments.service', getParameter);
+
+    function getParameter() {
+        return {
+            getParameterByName: getParameterByName
+        };
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+    }
+
     app.controller('IndexController', IndexController);
-    IndexController.$inject = ['web.api.service'];
+    IndexController.$inject = ['web.api.service', 'query.arguments.service'];
 
-    function IndexController(apiService) {
+    function IndexController(apiService, getParameter) {
         const ctrl = this;
-        let pageId = location.search.split("=")[1] || 1;
+        let pageId = getParameter.getParameterByName('p') || 1;
+        let query = getParameter.getParameterByName('q') || null;
+        ctrl.query = query;
 
-        apiService.getIndex({p: pageId})
+        apiService.getIndex({ p: pageId, q: query })
             .success(function (data) {
                 ctrl.posts = data['posts'];
                 ctrl.totalPageInView = data['total_pages_inview'];
