@@ -29,7 +29,8 @@ class PostHandler(tornado.web.RequestHandler):
             q_posts = Post.objects(title__icontains=query)
         else:
             q_posts = Post.objects
-        posts = q_posts.skip(offset).limit(ITEMS_PER_PAGE)
+        posts = q_posts.order_by('-post_time').skip(offset).limit(
+            ITEMS_PER_PAGE)
         total_pages_in_db = len(q_posts) // ITEMS_PER_PAGE
         if total_pages_in_db < TOTAL_PAGES_IN_VIEW:
             total_pages = total_pages_in_db
