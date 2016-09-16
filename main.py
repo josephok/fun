@@ -1,6 +1,7 @@
-from fanjian import FanjianSpider
-from juetu import JuetuSpider
-from threading import Thread
+from fanjian import FanjianSpider  # noqa
+from juetu import JuetuSpider  # noqa
+from multiprocessing.dummy import Pool as ThreadPool
+from spider import Spider
 
 import logging
 
@@ -15,16 +16,13 @@ logger.setLevel(logging.DEBUG)
 
 
 def crawl(spider):
-    spider.run()
+    spider().run()
 
 
-spiders = (FanjianSpider(), JuetuSpider())
-
-threads = []
-for spider in spiders:
-    t = Thread(target=crawl, args=(spider,))
-    threads.append(t)
-    t.start()
-
-for t in threads:
-    t.join()
+# 运行Spider所有子类的爬虫，放到线程池中运行
+spiders = Spider.__subclasses__()
+pool = ThreadPool()
+pool.map(crawl, spiders)
+# close the pool and wait for the work to finish
+pool.close()
+pool.join()

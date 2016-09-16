@@ -39,6 +39,7 @@ class Spider:
             settings = json.load(f)[self.name]
             self.url = settings['url']
             self.proxies = settings.get('proxies')
+            # 是否开启代理
             if self.proxies:
                 self.req = partial(requests.get, proxies=self.proxies)
             else:
@@ -49,10 +50,13 @@ class Spider:
         raise NotImplementedError
 
     def _parse_index(self, page):
-        """解析首页"""
+        """解析首页，返回详情页的url列表"""
         raise NotImplementedError
 
     def _get_index_urls(self):
+        """返回前`SCRAPY_PAGES`页的url，比如：[/page/1, /page/2/...]
+            返回给parse_index处理，从而解析出每个页面的详情页的url
+        """
         raise NotImplementedError
 
     def parse_index(self):

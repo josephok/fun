@@ -6,7 +6,9 @@ from tornado.options import define, options
 from spider import Post
 from datetime import datetime
 
+# 每页显示数量
 ITEMS_PER_PAGE = 10
+# 分页栏的数目
 TOTAL_PAGES_IN_VIEW = 10
 
 define("port", default=80, help="run on the given port", type=int)
@@ -19,7 +21,9 @@ class IndexHandler(tornado.web.RequestHandler):
 
 class PostHandler(tornado.web.RequestHandler):
     def get(self):
+        # 解析页数
         page = self.get_query_argument("p")
+        # 解析查询关键字，只支持title搜索
         try:
             query = self.get_query_argument("q")
         except tornado.web.MissingArgumentError:
@@ -31,7 +35,8 @@ class PostHandler(tornado.web.RequestHandler):
             q_posts = Post.objects
         posts = q_posts.order_by('-post_time').skip(offset).limit(
             ITEMS_PER_PAGE)
-        total_pages_in_db = len(q_posts) // ITEMS_PER_PAGE
+        # 总共页数
+        total_pages_in_db = len(q_posts) // ITEMS_PER_PAGE + 1
         if total_pages_in_db < TOTAL_PAGES_IN_VIEW:
             total_pages = total_pages_in_db
         else:
@@ -63,6 +68,7 @@ class DetailHandler(tornado.web.RequestHandler):
         self.write(json.dumps(ret_post))
 
     def delete(self, _id):
+        # 删除某个post
         Post.objects(id=_id).delete()
 
 
