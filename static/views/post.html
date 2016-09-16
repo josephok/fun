@@ -1,8 +1,29 @@
 <div class="page-header">
-  <h2>{{post.post.title}}</h2>
+  <h3>{{post.post.title}}</h3>
   <span class="label label-info">{{post.post.post_time}}</span>
+  <!-- Small modal -->
+    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target=".confirm">
+        <span class="glyphicon glyphicon-remove"></span> 删除此文章</button>
+    <div class="modal fade confirm">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">确认删除</h4>
+          </div>
+          <div class="modal-body">
+            <p>请确认删除删除，啦啦啦啦啦啦</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" ng-click="post.removePost(post.post.id)">
+                确认</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
   <p>
       <hr>
-  <div ng-bind-html="post.post.content">
+  <div ng-bind-html="post.post.content" style="max-width: 100%;">
   </div>
 </div>

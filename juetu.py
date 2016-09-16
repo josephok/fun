@@ -1,5 +1,8 @@
+import logging
 from spider import Spider, SCRAPY_PAGES
 from pyquery import PyQuery
+
+logger = logging.getLogger(__name__)
 
 
 class JuetuSpider(Spider):
@@ -25,5 +28,7 @@ class JuetuSpider(Spider):
         fn = lambda: this.map(lambda i, el: PyQuery(this).outerHtml())  # noqa
         PyQuery.fn.listOuterHtml = fn
         content = "".join(document(".box-left>p").listOuterHtml()[:-2])
+
+        logger.info("解析{}的内容，标题为：{}".format(self.name, title))
 
         return (title, post_time, content)

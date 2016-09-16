@@ -1,4 +1,7 @@
+import logging
 from spider import Spider, SCRAPY_PAGES
+
+logger = logging.getLogger(__name__)
 
 
 class FanjianSpider(Spider):
@@ -22,5 +25,7 @@ class FanjianSpider(Spider):
             namespaces={"re": r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}'})[1].strip()
         # 内容
         content = document(".view-main").html()
+
+        logger.info("解析{}的内容，标题为：{}".format(self.name, title))
 
         return (title, post_time, content)

@@ -33,7 +33,8 @@
     function apiService($http) {
         return {
             getIndex: getIndex,
-            getPost: getPost
+            getPost: getPost,
+            removePost: removePost
         };
 
         function getIndex(params) {
@@ -43,6 +44,10 @@
         function getPost(params) {
             const _id = params.id;
             return $http.get("/api/posts/" + _id);
+        }
+
+        function removePost(id) {
+            return $http.delete("/api/posts/" + id);
         }
     }
 
@@ -107,14 +112,33 @@
     }
 
     app.controller('PostController', PostController);
-    PostController.$inject = ['web.api.service', '$routeParams'];
+    PostController.$inject = ['web.api.service', '$routeParams', '$location', '$timeout'];
 
-    function PostController(apiService, $routeParams) {
+    function PostController(apiService, $routeParams, $location, $timeout) {
         const ctrl = this;
+
+        ctrl.removePost = function (id) {
+            apiService.removePost(id)
+                .success(function () {
+                    $(".modal.confirm").modal('hide');
+                    toastr.success('删除成功，即将跳转到首页');
+                    $timeout(function () {
+                        location.href = "/";
+                    }, 1000);
+                })
+                .error(function () {
+                    toastr.error('删除失败');
+                });
+        }
 
         apiService.getPost({id: $routeParams.id})
             .success(function (data) {
                 ctrl.post = data;
+            })
+            .error(function (data, status, headers, config) {
+                if (status === 404) {
+                    $location.url("/");
+                }
             });
     }
 }());

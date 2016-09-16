@@ -9,7 +9,7 @@ from datetime import datetime
 ITEMS_PER_PAGE = 10
 TOTAL_PAGES_IN_VIEW = 10
 
-define("port", default=8080, help="run on the given port", type=int)
+define("port", default=80, help="run on the given port", type=int)
 
 
 class IndexHandler(tornado.web.RequestHandler):
@@ -49,12 +49,6 @@ class PostHandler(tornado.web.RequestHandler):
         self.write(json.dumps(ret_posts))
 
 
-class PagesHandler(tornado.web.RequestHandler):
-    def get(self):
-        total_pages = len(Post.objects)
-        self.write(json.dumps(total_pages))
-
-
 class DetailHandler(tornado.web.RequestHandler):
     def get(self, post_id):
         post = Post.objects.get(id=post_id)
@@ -62,10 +56,14 @@ class DetailHandler(tornado.web.RequestHandler):
         ret_post = {
             'title': post.title,
             'post_time': datetime.strftime(post.post_time, "%Y-%m-%d %H:%M"),
-            'content': post.content
+            'content': post.content,
+            'id': str(post.id)
         }
 
         self.write(json.dumps(ret_post))
+
+    def delete(self, _id):
+        Post.objects(id=_id).delete()
 
 
 def make_app():

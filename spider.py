@@ -11,13 +11,7 @@ import time
 
 import logging
 
-logger = logging.getLogger(__file__)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')  # noqa
-ch = logging.StreamHandler()
-ch.setFormatter(formatter)
-logger.addHandler(ch)
-logger.setLevel(logging.DEBUG)
-
+logger = logging.getLogger(__name__)
 
 SETTINGS = os.path.join(os.path.dirname(__file__), "spiders.json")
 
