@@ -1,3 +1,5 @@
+import time
+
 from fanjian import FanjianSpider  # noqa
 from juetu import JuetuSpider  # noqa
 from qiqu import QiquSpider  # noqa
@@ -15,6 +17,8 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 logger.setLevel(logging.DEBUG)
 
+start = time.time()
+
 
 def crawl(spider):
     spider().run()
@@ -27,3 +31,6 @@ pool.map(crawl, spiders)
 # close the pool and wait for the work to finish
 pool.close()
 pool.join()
+
+end = time.time()
+logger.info('啦啦啦，{}个爬虫，总共花费{:.2f} s'.format(len(spiders), end - start))
