@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="zh-cn" ng-app="web">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/static/favicon.ico">
-    <title>你在哪里</title>
+    <title ng-cloak>{{!title}}</title>
 
     <!-- Bootstrap -->
     <link href="{{static_url("bower_components/bootstrap/dist/css/bootstrap.min.css")}}"
@@ -14,6 +14,12 @@
         rel="stylesheet">
 
         <style>
+        body {
+            background: url("/static/light-tile.gif") repeat 0 0;
+        }
+        .container {
+            background-color: white;
+        }
         .col-center-block {
             float: none;
             display: block;
@@ -29,10 +35,10 @@
       <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body ng-app="web">
+  <body>
       <div class="container">
-      <div class="col-xs-8 col-sm-12 col-center-block">
-          <h3><a href="/#/">你好，世界！</a>
+      <div class="col-md-8 col-xs-12 col-center-block">
+          <h3><a href="/#/"><pre style="display: inline-block;">你好，世界</pre></a>
               <form class="form-inline" style="display: inline-block; float: right;" action="/" method="GET">
                <div class="form-group">
                <input type="text" class="form-control" placeholder="搜索" name="q">

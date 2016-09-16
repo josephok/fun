@@ -1,5 +1,6 @@
 from fanjian import FanjianSpider  # noqa
 from juetu import JuetuSpider  # noqa
+from qiqu import QiquSpider  # noqa
 from multiprocessing.dummy import Pool as ThreadPool
 from spider import Spider
 

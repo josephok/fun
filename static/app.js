@@ -70,9 +70,10 @@
     }
 
     app.controller('IndexController', IndexController);
-    IndexController.$inject = ['web.api.service', 'query.arguments.service'];
+    IndexController.$inject = ['$rootScope', 'web.api.service', 'query.arguments.service'];
 
-    function IndexController(apiService, getParameter) {
+    function IndexController($rootScope, apiService, getParameter) {
+        $rootScope.title = '你在哪里';
         const ctrl = this;
         let pageId = getParameter.getParameterByName('p') || 1;
         let query = getParameter.getParameterByName('q') || null;
@@ -112,9 +113,9 @@
     }
 
     app.controller('PostController', PostController);
-    PostController.$inject = ['web.api.service', '$routeParams', '$location', '$timeout'];
+    PostController.$inject = ['$rootScope', 'web.api.service', '$routeParams', '$location', '$timeout'];
 
-    function PostController(apiService, $routeParams, $location, $timeout) {
+    function PostController($rootScope, apiService, $routeParams, $location, $timeout) {
         const ctrl = this;
 
         ctrl.removePost = function (id) {
@@ -134,6 +135,7 @@
         apiService.getPost({id: $routeParams.id})
             .success(function (data) {
                 ctrl.post = data;
+                $rootScope.title = data['title'];
             })
             .error(function (data, status, headers, config) {
                 if (status === 404) {
