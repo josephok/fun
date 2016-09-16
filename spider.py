@@ -16,7 +16,8 @@ logger = logging.getLogger(__name__)
 SETTINGS = os.path.join(os.path.dirname(__file__), "spiders.json")
 
 SCRAPY_PAGES = 20
-
+# 超时时间10s
+REQUESTS_TIME_OUT = 10
 connect('fun')  # noqa
 
 
@@ -41,9 +42,10 @@ class Spider:
             self.proxies = settings.get('proxies')
             # 是否开启代理
             if self.proxies:
-                self.req = partial(requests.get, proxies=self.proxies)
+                self.req = partial(requests.get, proxies=self.proxies,
+                                   timeout=REQUESTS_TIME_OUT)
             else:
-                self.req = partial(requests.get)
+                self.req = partial(requests.get, timeout=REQUESTS_TIME_OUT)
 
     def _parse_content(self, page, document):
         """解析内容，返回一个元组：(title, post_time, content)"""
