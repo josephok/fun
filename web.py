@@ -86,6 +86,7 @@ def make_app():
     return tornado.web.Application(handlers, **settings)
 
 if __name__ == "__main__":
+    tornado.options.parse_command_line()
     app = make_app()
     app.listen(options.port)
     tornado.ioloop.IOLoop.current().start()
