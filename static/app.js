@@ -1,5 +1,5 @@
 (function () {
-    const app = angular.module('web', ['ngRoute']);
+    const app = angular.module('web', ['ngRoute', 'ngProgress']);
     app
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider.when('/', {
@@ -70,10 +70,15 @@
     }
 
     app.controller('IndexController', IndexController);
-    IndexController.$inject = ['$rootScope', 'web.api.service', 'query.arguments.service'];
+    IndexController.$inject = ['$rootScope', 'web.api.service', 'query.arguments.service',
+                               'ngProgressFactory', '$timeout'];
 
-    function IndexController($rootScope, apiService, getParameter) {
+    function IndexController($rootScope, apiService, getParameter, ngProgressFactory, $timeout) {
         $rootScope.title = '你在哪里';
+        $rootScope.progressbar = ngProgressFactory.createInstance();
+        $rootScope.progressbar.setColor('#337ab7');
+        $rootScope.progressbar.start();
+        $timeout($rootScope.progressbar.complete(), 1000);
         const ctrl = this;
         let pageId = getParameter.getParameterByName('p') || 1;
         let query = getParameter.getParameterByName('q') || null;
@@ -106,10 +111,6 @@
                     ctrl.pages.push(i);
                 }
             });
-        ctrl.posts = [{
-            id: "123",
-            title: "我是小王子"
-        }]
     }
 
     app.controller('PostController', PostController);
