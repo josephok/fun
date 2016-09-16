@@ -4,4 +4,4 @@
 # eg.
 # 0 * * * * /home/joe/code/fun/cron/spider.sh
 
-cd /home/joe/code/fun && python3 main.py > logs/spider/stdout.log 2>logs/spider/stderr.log
+cd /home/joe/code/fun && python3 main.py &> logs/spider/stdout.log
