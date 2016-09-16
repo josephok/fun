@@ -1,18 +1,12 @@
 import logging
-from spider import Spider, SCRAPY_PAGES
+from spider import Spider
 
 logger = logging.getLogger(__name__)
 
 
 class FanjianSpider(Spider):
     name = "犯贱志"
-
-    def _get_index_urls(self):
-        urls = [self.url]
-        next_urls = ['{}latest-{}'.format(self.url, i)
-            for i in range(2, SCRAPY_PAGES + 1)]
-        urls.extend(next_urls)
-        return urls
+    page_pattern = "latest-"
 
     def _parse_index(self, page):
         return page.xpath("//h2[@class='cont-list-title']/a/@href")

@@ -13,5 +13,11 @@
         "proxies": {
             "http": "http://127.0.0.1:8087"
         }
+    },
+    "无聊图": {
+        "url": "http://shuabao.net/wuliaotu/",
+        "proxies": {
+            "http": "http://127.0.0.1:8087"
+        }
     }
 }

@@ -33,9 +33,16 @@ class Post(Document):  # noqa
 
 
 class Spider:
+    # 名称
+    name = None
+    # 是否需要解码
     need_decode = False
+    # 分页模式
+    page_pattern = None
 
     def __init__(self, *args, **kwargs):
+        if not self.name:
+            raise Exception("先给你的爬虫取个名字，然后将配置写到spiders.json中")
         with open(SETTINGS, "r") as f:
             settings = json.load(f)[self.name]
             self.url = settings['url']
@@ -47,18 +54,24 @@ class Spider:
             else:
                 self.req = partial(requests.get, timeout=REQUESTS_TIME_OUT)
 
+    def _get_index_urls(self):
+        """返回前`SCRAPY_PAGES`页的url，比如：[/page/1, /page/2/...]
+            返回给parse_index处理，从而解析出每个页面的详情页的url
+        """
+        if not self.page_pattern:
+            raise Exception("必须要指定一个分页模式，哥们！")
+        urls = [self.url]
+        next_urls = ['{}{}{}'.format(self.url, self.page_pattern, i)
+            for i in range(2, SCRAPY_PAGES + 1)]
+        urls.extend(next_urls)
+        return urls
+
     def _parse_content(self, page, document):
         """解析内容，返回一个元组：(title, post_time, content)"""
         raise NotImplementedError
 
     def _parse_index(self, page):
         """解析首页，返回详情页的url列表"""
-        raise NotImplementedError
-
-    def _get_index_urls(self):
-        """返回前`SCRAPY_PAGES`页的url，比如：[/page/1, /page/2/...]
-            返回给parse_index处理，从而解析出每个页面的详情页的url
-        """
         raise NotImplementedError
 
     def parse_index(self):
