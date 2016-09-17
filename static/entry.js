@@ -192,14 +192,17 @@
 	  app
 	    .config(['$routeProvider', function ($routeProvider) {
 	      $routeProvider.when('/', {
-	          controller: 'IndexController',
-	          controllerAs: 'index',
-	          templateUrl: '/static/views/index.html'
+	        controller: 'IndexController',
+	        controllerAs: 'index',
+	        templateUrl: '/static/views/index.html'
 	      })
 	      .when('/post/:id', {
-	          controller: 'PostController',
-	          controllerAs: 'post',
-	          templateUrl: '/static/views/post.html'
+	        controller: 'PostController',
+	        controllerAs: 'post',
+	        templateUrl: '/static/views/post.html'
+	      })
+	      .when('/fengyansi/', {
+	        templateUrl: '/static/views/fengyansi.html'
 	      })
 	      .otherwise({redirectTo: '/'});
 	    }])
