@@ -1,5 +1,10 @@
 (function () {
-    const app = angular.module('web', ['ngRoute', 'ngProgress']);
+	require('./bower_components/bootstrap/dist/js/bootstrap.min.js');
+	require('./bower_components/angular/angular.min.js');
+	require('./bower_components/angular-route/angular-route.min.js');
+	require('./bower_components/ngprogress/build/ngprogress.min.js');
+	require('./angular-base64.js');
+    const app = angular.module('web', ['ngRoute', 'ngProgress', 'base64']);
     app
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider.when('/', {
@@ -28,28 +33,8 @@
         return directive;
     }
 
-    app.factory('base64.service', base64);
-    function base64() {
-      return {
-        b64EncodeUnicode: b64EncodeUnicode,
-        b64DecodeUnicode: b64DecodeUnicode
-      };
-
-      function b64EncodeUnicode(str) {
-        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-          return String.fromCharCode('0x' + p1);
-        }));
-      }
-
-      function b64DecodeUnicode(str) {
-        return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-      }
-    }
-
     app.factory('web.api.service', apiService);
-    apiService.$inject = ['$http', 'base64.service'];
+    apiService.$inject = ['$http', 'base64'];
     function apiService($http, base64) {
         return {
             getIndex: getIndex,
@@ -68,7 +53,7 @@
 
         function removePost(id, passcode) {
             return $http.delete("/api/posts/" + id, {
-              headers: {'passcode': base64.b64EncodeUnicode(passcode)}
+              headers: {'passcode': base64.encode(passcode)}
             });
         }
     }
