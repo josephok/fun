@@ -1,8 +1,10 @@
 <div class="page-header">
   <h3>{{post.post.title}}</h3>
-  <span class="label label-info">{{post.post.post_time}}</span>
+  <span class="label label-info">
+      <span class="glyphicon glyphicon-calendar"></span>
+  {{post.post.post_time}}</span>
   <!-- Small modal -->
-    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target=".confirm">
+    <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target=".confirm">
         <span class="glyphicon glyphicon-remove"></span> 删除此文章</button>
     <div class="modal fade confirm">
       <div class="modal-dialog">
@@ -12,11 +14,20 @@
             <h4 class="modal-title">确认删除</h4>
           </div>
           <div class="modal-body">
-            <p>请确认删除删除，啦啦啦啦啦啦</p>
+            <form role="form">
+              <div class="form-group">
+                <label for="passcode">骚年，你的口令是：</label>
+                <div>
+                    <textarea class="form-control" id="passcode" ng-model="post.passcode"></textarea>
+                </div>
+              </div>
+          </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-            <button type="button" class="btn btn-primary" ng-click="post.removePost(post.post.id)">
+            <button type="button" class="btn btn-primary"
+                ng-disabled="!post.passcode"
+                ng-click="post.removePost(post.post.id, post.passcode)">
                 确认</button>
           </div>
         </div><!-- /.modal-content -->

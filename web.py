@@ -69,7 +69,11 @@ class DetailHandler(tornado.web.RequestHandler):
 
     def delete(self, _id):
         # 删除某个post
-        Post.objects(id=_id).delete()
+        passcode = self.request.headers.get('passcode')
+        if passcode and passcode == "6YeH5qGR5a2Q":
+            Post.objects(id=_id).delete()
+        else:
+            self.set_status(401)
 
 
 def make_app():

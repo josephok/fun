@@ -28,9 +28,29 @@
         return directive;
     }
 
+    app.factory('base64.service', base64);
+    function base64() {
+      return {
+        b64EncodeUnicode: b64EncodeUnicode,
+        b64DecodeUnicode: b64DecodeUnicode
+      };
+
+      function b64EncodeUnicode(str) {
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+          return String.fromCharCode('0x' + p1);
+        }));
+      }
+
+      function b64DecodeUnicode(str) {
+        return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+      }
+    }
+
     app.factory('web.api.service', apiService);
-    apiService.$inject = ['$http'];
-    function apiService($http) {
+    apiService.$inject = ['$http', 'base64.service'];
+    function apiService($http, base64) {
         return {
             getIndex: getIndex,
             getPost: getPost,
@@ -46,8 +66,10 @@
             return $http.get("/api/posts/" + _id);
         }
 
-        function removePost(id) {
-            return $http.delete("/api/posts/" + id);
+        function removePost(id, passcode) {
+            return $http.delete("/api/posts/" + id, {
+              headers: {'passcode': base64.b64EncodeUnicode(passcode)}
+            });
         }
     }
 
@@ -119,8 +141,8 @@
     function PostController($rootScope, apiService, $routeParams, $location, $timeout) {
         const ctrl = this;
 
-        ctrl.removePost = function (id) {
-            apiService.removePost(id)
+        ctrl.removePost = function (id, passcode) {
+            apiService.removePost(id, passcode)
                 .success(function () {
                     $(".modal.confirm").modal('hide');
                     toastr.success('删除成功，即将跳转到首页');
@@ -128,8 +150,12 @@
                         location.href = "/";
                     }, 1000);
                 })
-                .error(function () {
-                    toastr.error('删除失败');
+                .error(function (data, status, headers, config, statusText) {
+                    let msg = '删除失败';
+                    if (status === 401) {
+                      msg = '骚年，口令不对，回家再读几年书吧！';
+                    }
+                    toastr.error(msg);
                 });
         }
 
