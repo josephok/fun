@@ -16,7 +16,7 @@ class FanjianSpider(Spider):
         title = page.xpath("//h1/@title")[0]
         # 发布日期
         post_time = page.xpath("//div[contains(@class, 'view-info')]/text()",
-            namespaces={"re": r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}'})[1].strip()
+            namespaces={"re": r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}'})[1].strip()  # noqa
         # 内容
         content = document(".view-main").html()
 

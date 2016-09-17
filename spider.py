@@ -62,7 +62,7 @@ class Spider:
             raise Exception("必须要指定一个分页模式，哥们！")
         urls = [self.url]
         next_urls = ['{}{}{}'.format(self.url, self.page_pattern, i)
-            for i in range(2, SCRAPY_PAGES + 1)]
+                     for i in range(2, SCRAPY_PAGES + 1)]
         urls.extend(next_urls)
         return urls
 
