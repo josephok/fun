@@ -36,7 +36,10 @@ class PostHandler(tornado.web.RequestHandler):
         posts = q_posts.order_by('-post_time').skip(offset).limit(
             ITEMS_PER_PAGE)
         # 总共页数
-        total_pages_in_db = len(q_posts) // ITEMS_PER_PAGE + 1
+        total_pages_in_db = len(q_posts) / ITEMS_PER_PAGE
+        if total_pages_in_db != len(q_posts) // ITEMS_PER_PAGE:
+            total_pages_in_db += 1
+        total_pages_in_db = int(total_pages_in_db)
         if total_pages_in_db < TOTAL_PAGES_IN_VIEW:
             total_pages = total_pages_in_db
         else:
