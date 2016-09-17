@@ -73,11 +73,13 @@
     let post = localStorage.getItem(cacheId);
     if (post) {
       ctrl.post = JSON.parse(post);
+      $rootScope.title = ctrl.post.title;
     }
     else {
       apiService.getPost({id: postId})
         .success(function (data) {
             ctrl.post = data;
+            $rootScope.title = ctrl.post.title;
             // 存储item
             localStorage.setItem(cacheId, JSON.stringify(data));
         })
@@ -87,7 +89,6 @@
             }
         });
     }
-    $rootScope.title = ctrl.post.title;
   }
 
   class Web {
