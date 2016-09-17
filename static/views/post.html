@@ -1,8 +1,7 @@
 <div class="page-header">
-  <h3>{{post.post.title}}</h3>
-  <span class="label label-info">
-      <span class="glyphicon glyphicon-calendar"></span>
-  {{post.post.post_time}}</span>
+  <h3 ng-bind="post.post.title"></h3>
+  <span class="label label-info" ng-cloak>
+      <span class="glyphicon glyphicon-calendar"></span> {{post.post.post_time}}</span>
   <!-- Small modal -->
     <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target=".confirm">
         <span class="glyphicon glyphicon-remove"></span> 删除此文章</button>

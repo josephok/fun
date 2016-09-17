@@ -45,37 +45,49 @@
       });
   }
 
-  function PostController($rootScope, apiService, $routeParams, $location, $timeout) {
+  function PostController($rootScope, apiService, $routeParams, $location, $timeout, CACHE_PREFIX) {
     const ctrl = this;
+    const postId = $routeParams.id;
+    const cacheId = `${CACHE_PREFIX}.post.${postId}`;
 
     ctrl.removePost = function (id, passcode) {
       apiService.removePost(id, passcode)
         .success(function () {
-            $(".modal.confirm").modal('hide');
-            toastr.success('删除成功，即将跳转到首页');
-            $timeout(function () {
-                location.href = "/";
-            }, 1000);
+          // 清除此item
+          localStorage.removeItem(cacheId);
+          $(".modal.confirm").modal('hide');
+          toastr.success('删除成功，即将跳转到首页');
+          $timeout(function () {
+              location.href = "/";
+          }, 1000);
         })
         .error(function (data, status, headers, config, statusText) {
-            let msg = '删除失败';
-            if (status === 401) {
-              msg = '骚年，口令不对，回家再读几年书吧！';
-            }
-            toastr.error(msg);
+          let msg = '删除失败';
+          if (status === 401) {
+            msg = '骚年，口令不对，回家再读几年书吧！';
+          }
+          toastr.error(msg);
         });
     }
 
-    apiService.getPost({id: $routeParams.id})
-      .success(function (data) {
-          ctrl.post = data;
-          $rootScope.title = data['title'];
-      })
-      .error(function (data, status, headers, config) {
-          if (status === 404) {
-              $location.url("/");
-          }
-      });
+    let post = localStorage.getItem(cacheId);
+    if (post) {
+      ctrl.post = JSON.parse(post);
+    }
+    else {
+      apiService.getPost({id: postId})
+        .success(function (data) {
+            ctrl.post = data;
+            // 存储item
+            localStorage.setItem(cacheId, JSON.stringify(data));
+        })
+        .error(function (data, status, headers, config) {
+            if (status === 404) {
+                $location.url("/");
+            }
+        });
+    }
+    $rootScope.title = ctrl.post.title;
   }
 
   class Web {
@@ -129,6 +141,7 @@
   }
 
   const app = angular.module('web', ['ngRoute', 'ngProgress', 'base64']);
+  app.constant('CACHE_PREFIX', 'fun.app');
   app
     .config(['$routeProvider', function ($routeProvider) {
       $routeProvider.when('/', {
@@ -159,5 +172,6 @@
                                'ngProgressFactory', '$timeout'];
 
     app.controller('PostController', PostController);
-    PostController.$inject = ['$rootScope', 'web.api.service', '$routeParams', '$location', '$timeout'];
+    PostController.$inject = ['$rootScope', 'web.api.service', '$routeParams',
+                              '$location', '$timeout', 'CACHE_PREFIX'];
 }());
