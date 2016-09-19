@@ -2,7 +2,7 @@ import requests
 import json
 import os
 import gevent
-
+import gevent.monkey
 from functools import partial
 from lxml import html as xhtml
 from pyquery import PyQuery
@@ -10,14 +10,15 @@ from mongoengine import *  # noqa
 import time
 
 import logging
+gevent.monkey.patch_socket()
 
 logger = logging.getLogger(__name__)
 
 SETTINGS = os.path.join(os.path.dirname(__file__), "spiders.json")
 
 SCRAPY_PAGES = 20
-# 超时时间10s
-REQUESTS_TIME_OUT = 10
+# 超时时间20s
+REQUESTS_TIME_OUT = 20
 connect('fun')  # noqa
 
 

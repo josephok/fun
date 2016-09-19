@@ -4,7 +4,7 @@ from fanjian import FanjianSpider  # noqa
 from juetu import JuetuSpider  # noqa
 from qiqu import QiquSpider  # noqa
 from wuliao import WuliaoSpider  # noqa
-from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing import Pool
 from spider import Spider
 
 import logging
@@ -25,9 +25,9 @@ def crawl(spider):
     spider().run()
 
 
-# 运行Spider所有子类的爬虫，放到线程池中运行
+# 运行Spider所有子类的爬虫，放到进程池中运行
 spiders = Spider.__subclasses__()
-pool = ThreadPool()
+pool = Pool()
 pool.map(crawl, spiders)
 # close the pool and wait for the work to finish
 pool.close()

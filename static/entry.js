@@ -102,10 +102,10 @@
 	          // 清除此item
 	          localStorage.removeItem(cacheId);
 	          $(".modal.confirm").modal('hide');
-	          toastr.success('删除成功，即将跳转到首页');
-	          $timeout(function () {
-	              location.href = "/";
-	          }, 1000);
+	          toastr.success('删除成功');
+	          // $timeout(function () {
+	          //     location.href = "/";
+	          // }, 1000);
 	        })
 	        .error(function (data, status, headers, config, statusText) {
 	          let msg = '删除失败';
