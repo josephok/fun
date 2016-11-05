@@ -50,16 +50,36 @@
     const postId = $routeParams.id;
     const cacheId = `${CACHE_PREFIX}.post.${postId}`;
 
-    ctrl.removePost = function (id, passcode) {
-      apiService.removePost(id, passcode)
+    ctrl.schema = {
+      type: "object",
+      properties: {
+        passcode: {
+          type: "string", title: "骚年，你的口令是："
+        }
+      },
+      required: [
+        "passcode"
+      ]
+    }
+
+    ctrl.form = [
+      {
+        key: "passcode",
+        validationMessage: {
+          302: "必填"
+        }
+      }
+    ]
+    ctrl.model = {}
+
+    ctrl.removePost = function () {
+      let passcode = ctrl.model.passcode
+      apiService.removePost(postId, passcode)
         .success(function () {
           // 清除此item
           localStorage.removeItem(cacheId);
           $(".modal.confirm").modal('hide');
           toastr.success('删除成功');
-          // $timeout(function () {
-          //     location.href = "/";
-          // }, 1000);
         })
         .error(function (data, status, headers, config, statusText) {
           let msg = '删除失败';
@@ -141,7 +161,7 @@
     }
   }
 
-  const app = angular.module('web', ['ngRoute', 'ngProgress', 'base64']);
+  const app = angular.module('web', ['ngRoute', 'ngProgress', 'base64', 'schemaForm']);
   app.constant('CACHE_PREFIX', 'fun.app');
   app
     .config(['$routeProvider', function ($routeProvider) {

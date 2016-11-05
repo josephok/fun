@@ -13,20 +13,16 @@
             <h4 class="modal-title">确认删除</h4>
           </div>
           <div class="modal-body">
-            <form role="form">
-              <div class="form-group">
-                <label for="passcode">骚年，你的口令是：</label>
-                <div>
-                    <textarea class="form-control" id="passcode" ng-model="post.passcode"></textarea>
-                </div>
-              </div>
-          </form>
+          <form name="schemaForm" sf-schema="post.schema" sf-form="post.form" sf-model="post.model"
+                sf-options="{ validateOnRender: true,
+                  pristine: { errors: false, success: false } }"
+          ></form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
             <button type="button" class="btn btn-primary"
-                ng-disabled="!post.passcode"
-                ng-click="post.removePost(post.post.id, post.passcode)">
+                ng-disabled="schemaForm.$invalid"
+                ng-click="post.removePost()">
                 确认</button>
           </div>
         </div><!-- /.modal-content -->
